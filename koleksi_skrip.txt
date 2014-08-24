@@ -1,0 +1,72 @@
+###########
+# Dial Up #
+###########
+# Setting Dial Up
+/interface ppp-client add name=(name "Esia") phone=#777 user=(user "cmn267@cmn.id") password=(pass "cmn") dial-on-demand=no use-peer-dns=no add-default-route=no disable=no
+
+##########
+# Bridge #
+##########
+# Buat interface bridge dan tambahkan ether2-ether5 secara rekursif
+:local myPort "ether"
+/interface bridge add name=Lan disabled=no
+:for a from 2 to 5 do={/interface bridge port add interface=(interface $myPort.$a) bridge=Lan}
+
+# Tambahkan wlan ke bridge
+/interface bridge port add interface=wlan1 bridge=Lan
+
+#######
+# LAN #
+#######
+# Setting ip address bridge
+/ip address add address=(address "192.168.1.1/29") interface=Lan disabled=no
+
+########
+# WIFI #
+########
+# setting security profile wifi
+/interface wireless security-profiles add name=wpa3 authentication-types=wpa-psk,wpa2-psk mode=dynamic-keys unicast-ciphers=tkip group-ciphers=tkip wpa-pre-shared-key=12345678 wpa2-pre-shared-key=12345678
+
+# Setting interface wlan
+/interface wireless set numbers=0 security-profile=wpa3 disabled=no
+/interface wireless set wlan1 ssid=BukanAP band=2ghz-b/g/n mode=ap-bridge disabled=no
+
+# Setting IP Address Wlan
+#/ip address add address=(address "192.168.2.1/29") interface=wlan1 disabled=no
+
+###############
+# DHCP Server #
+###############
+
+# Setting DHCP Server Wlan
+/ip pool add name=wlan range=(address "192.168.2.2-192.168.2.6")
+/ip dhcp-server add name=wlan interface=wlan1 address-pool=wlan
+/ip dhcp-server enable number=wlan
+/ip dhcp-server network add address=(address "192.168.2.0/29") gateway=(gateway "192.168.2.1") dns-server=8.8.8.8,8.8.4.4
+
+#######
+# DNS #
+#######
+# Setting DNS Server
+/ip dns set server=8.8.8.8,8.8.4.4 allow-remote-requests=no
+
+#################
+# Default Route #
+#################
+# Setting default route
+/ip route add dst-address=0.0.0.0/0 gateway=Esia
+
+################
+# NAT Firewall #
+################
+# Setting firewall NAT
+/ip firewall nat add chain=srcnat action=masquerade
+
+############
+# Identity #
+############
+# Setting identity router
+/system identity set name=(nama "CMN Store")
+# Setting user password : Tambahkan user reja dan disable user admin
+/user add name=reja password=reja@oke group=full
+/user disable number=0
