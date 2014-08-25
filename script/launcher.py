@@ -5,7 +5,7 @@
 
 import os, sys
 
-# Bersihin layar dulu
+# Clear Screen
 os.system('cls' if os.name == 'nt' else 'clear')
 
 print "\n"
@@ -17,26 +17,23 @@ print "|     Mikrotik Script by Yudhis      |"
 print "|" + " " * 36 + "|"
 print "-" * 38
 
-# Pilihan Menu
-print "\nSkrip yang tersedia : "
-print "1. VPN Mobile untuk CMN Store"
-print "2. VPN Mobile"
-print "3. Internet Dedicated"
-pilihan = raw_input("Skrip yang ingin dijalankan ? ")
+# Menu
+print "\nAvailable Scripts : "
+print "1. VPN Mobile"
+print "2. Internet Dedicated"
+pilihan = raw_input("Script to run ? ")
 
-# Buat orang gila yang ngisi pake huruf
+# Check input, only numbers allowed
 try:
         pilihan = int(pilihan)
 except ValueError:
-        sys.exit("Jangan gila dong!!! Masukin nomer aja\n")
+        sys.exit("Please insert number from available scripts\n")
 
 # Tentukan pilihan
 if pilihan == 1:        
-        execfile("vpn_cmn.py")
-elif pilihan == 2:
         execfile("vpn_mobile.py")
-elif pilihan == 3:
+elif pilihan == 2:
         execfile("internet_dedicated.py")
 else:
-        print "gak ada no " + str(pilihan) + " tauuu"
+        print "Script no. " + str(pilihan) + " not available"
 
