@@ -7,27 +7,20 @@
 L2TP VPN VIA PPP (DOUBLE DIAL) :
 # Config PPP
 /interface ppp-client add name="ppp-cmn" apn="internet" phone="*99#" dial-on-demand=no add-default-route=no use-peer-dns=no disabled=no
-
 # Config route ip LNS to interface ppp
 /ip route add dst-address="202.152.196.118" gateway=(gateway "ppp-cmn") disabled=no
-
 # Config L2TP
 /interface l2tp-client add name="l2tp-cmn" connect-to="202.152.196.118" user="cmn328@cmn.id" password="cmn328" disabled=no
-
 # Config default route to interface L2TP
 /ip route add dst-address="0.0.0.0/0" gateway=(gateway "l2tp-cmn") disabled=no
-
 # Config Bridge
 /interface bridge add name="bridge1" disabled=no
 :local myPort "ether"
 :for a from 1 to 4 do={/interface bridge port add \ interface=(interface $myPort.$a) bridge="bridge1"}
-
 # Config IP Address Bridge
 /ip address add address="10.0.19.69/30" interface="bridge1" disabled=no
-
 # Config DNS
 /ip dns set servers="8.8.8.8,8.8.4.4" allow-remote-requests=no
-
 # Config Identity, user, pass
 /system identity set name="CMN328"
 /user add name="reja" password="reja@oke" group=full
