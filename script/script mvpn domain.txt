@@ -1,0 +1,19 @@
+#########################
+#                       #
+#  RAW MIKROTIK SCRIPT  #
+#                       #
+#########################
+
+L2TP VPN VIA PPP (DOUBLE DIAL) :
+# Config PPP
+/interface ppp-client add name="%s" phone="#777" user="%s" password="%s" dial-on-demand=no add-default-route=no use-peer-dns=no disabled=no
+# Config Bridge
+/interface bridge add name="%s" disabled=no :local myPort "ether" :for a from %s to %s do={/interface bridge port add \ interface=(interface $myPort.$a) bridge="%s"}
+# Config IP Address Bridge
+/ip address add address="%s" interface="%s" disabled=no
+# Config default route to interface L2TP
+/ip route add dst-address="0.0.0.0/0" gateway=(gateway "%s") disabled=no
+# Config DNS
+/ip dns set servers="%s" allow-remote-requests=no
+# Config Identity, user, pass
+/system identity set name="%s" /user add name="%s" password="%s" group=full /user disable number=0
